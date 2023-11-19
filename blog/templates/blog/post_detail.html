@@ -2,51 +2,64 @@
 
 {% block content %}
 
-    <h2 class="title">{{post.title}}</h2>
-    <small>Posted at {{post.posted_date}}</small>
-    <p>{{post.intro}}</p>
-    <p>{{post.body}}</p>
-    <hr/>
+<h2 class="title">{{post.title}}</h2>
+<small>Posted at {{post.posted_date}}</small>
+<p>{{post.intro}}</p>
+<p>{{post.body}}</p>
+<hr/>
 
     <!-- コメントされたものを表示 -->
-    <h2 class="subtitle">コメント</h2>
-    {% for comment in post.comments.all %}
-    <article class="nedia">
-        <div class="media-content">
-            <div class="content">
-                <p>
-                    <strong>
-                        {{ comment.name }} 
-                        <small>{{ comment.posted_date }}</small>                        
-                    </strong>
-                    <br>
-                    {{ comment.comment }}
-                    <hr>                    
-                </p>
+    <h2 class="subtitle" style="text-transform: uppercase;">コメント</h2>
+    <div class="comment-section" style="width: 100%;">
+        {% if post.comments.all %}
+            {% for comment in post.comments.all %}
+                <article class="media" style="background-color: #f2f2f2; padding: 10px; margin-bottom: 10px;">
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <strong style="color: #3366ff;">
+                                    {{ comment.name }} 
+                                    <small style="font-size: 12px; color: #666;">{{ comment.posted_date }}</small>                        
+                                </strong>
+                                <br>
+                                {{ comment.comment }}
+                                <hr style="border-color: #ccc; border-width: 1px;">                    
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        {% else %}
+            <div class="notification" style="background-color: #ffcccc; padding: 10px;">
+                <p style="font-style: italic;">コメントは未だありません</p>
             </div>
-        </div>
-    </article>
-    <!-- コメントが存在しない場合 -->
-    {% empty %}
-    <div class="notification">
-        <p>コメントは未だありません</p>
+        {% endif %}
     </div>
-
-    {% endfor %}
-
-
-    <!-- 投稿エリア -->
-    <form action="." method="post">
+    <form action="." method="post" style="background-color: #f2f2f2; padding: 10px; width: 100%;">
         <!-- セキュリティ対策 formに対し、必ず記述！ -->
         {% csrf_token %}
         <!-- フォームを生成 -->
-        {{ form.as_ul }}
         <div class="field">
+            <label class="label">NAME</label>
             <div class="control">
-                <button class="button is-danger">送信</button>
+                {{ form.name }}
             </div>
         </div>
-    </form>
-
-
+        <div class="field">
+            <label class="label">Email</label>
+            <div class="control">
+                {{ form.email }}
+            </div>
+        </div>
+        <div class="field" >
+            <label class="label">Comment</label>
+            <div class="control">
+                {{ form.comment }}
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <button class="button is-danger is-large">送信</button>
+            </div>
+        </div>
 {% endblock %}
